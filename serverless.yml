@@ -1,0 +1,58 @@
+
+service: servesless
+ 
+custom:
+  settings:
+    POST_TABLE: posts
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  environment: ${self:custom.settings}
+   
+  credentials:
+      accessKeyId: AKIAWBBQGBVJSQOTW6VR
+      secretAccessKey: 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
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+
+      Resource:
+        - "*"
+    
+functions:
+  createPost:
+    handler: handler.createPost
+    events:
+      - http:
+          path: /post
+          method: post
+
+     
+    
+
+resources:
+  Resources:
+    PostTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.settings.POST_TABLE}
+
+      
+
+ 
