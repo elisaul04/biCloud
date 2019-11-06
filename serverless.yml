@@ -11,8 +11,8 @@ provider:
   environment: ${self:custom.settings}
    
   credentials:
-      accessKeyId: AKIAWBBQGBVJSQOTW6VR
-      secretAccessKey: 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
+      accessKeyId: AKIAIFG4JSG2TMTWYHZA
+      secretAccessKey: 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
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -34,8 +34,41 @@ functions:
           path: /post
           method: post
 
-     
-    
+  getAllPosts:
+    handler: handler.getAllPost
+    events:
+      - http:
+          path: /posts
+          method: get
+          cors: true
+
+  getPosts:
+    handler: handler.getPosts
+    events:
+      - http:
+          path: /posts/{number}
+          method: get
+
+  getPost:
+    handler: handler.getPost
+    events:
+      - http:
+          path: /post/{id}
+          method: get   
+
+  # updatePost:
+  #   handler: handler.updatePost
+  #   events:
+  #     - http:
+  #         path: /post/{id}
+  #         method: put 
+
+  # deletePost:
+  #   handler: handler.deletePost
+  #   events:
+  #     - http:
+  #         path: /post/{id}
+  #         method: delete
 
 resources:
   Resources:

@@ -29,3 +29,52 @@ module.exports.createPost = (event,context,callback)=>{
   }).catch(error=> response(null,response(error.statusCode,error)))
 }
 
+//get All post
+module.exports.getAllPost = (event,context,callback) => {
+   return db.scan({
+    TableName:postTable
+   }).promise().then(res=>{
+     callback(null, response(200,res.Items))
+   }).catch(error=> response(null,response(error.statusCode,error)))
+}
+
+module.exports.getPosts = (event,context,callback) =>{
+  const number = event.pathParameters.number;
+  const params= {
+    TableName:postTable,
+    Limit:number
+  };
+  return db.scan(params).promise().then(res=>{
+    callback(null, response(200,res.Items))
+  }).catch(error=> response(null,response(error.statusCode,error)))
+}
+
+module.exports.getPost = (event,context,callback)=>{
+const id = event.pathParameters.id;
+  const params = {
+    key:{
+      id:id
+    },
+    TableName:postTable
+  }
+  return db.get(params).promise().then(res=>{
+    if(res.Item)callback(null,response(200,res.item))
+    else callback(null,response(404,{error: 'post not found'}))
+  })
+   .catch(error=> response(null,response(error.statusCode,error)))
+}
+
+// module.exports.updatePost= (event, context, callback) =>{
+//   const id = event.pathParameter.id;
+//   const body = JSON.params(event.body);
+//   const paramName = body.paramName;
+//   const paramValue = body.paramValue;
+
+//   const params = {
+//     key:{
+//       id:id
+//     },
+//     TableName : postTable,
+//     ConditionExpression:'atrribute_exits(id)'
+//   }
+// }
